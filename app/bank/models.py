@@ -1,5 +1,3 @@
-from functools import wraps
-
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -87,6 +85,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     objects = CustomUserManager()
+
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customuser_set',  # Adding a custom related_name to avoid clashes
+        blank=True,
+    )
+
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='customuser_set',  # Adding a custom related_name to avoid clashes
+        blank=True,
+    )
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['username', 'email', 'first_name', 'last_name']
