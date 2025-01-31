@@ -1,0 +1,19 @@
+{% extends "bank/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Logowanie</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Nazwa użytkownika:</label>
+            <input type="text" name="username" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Hasło:</label>
+            <input type="password" name="password" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Zaloguj się</button>
+    </form>
+</div>
+{% endblock %}
