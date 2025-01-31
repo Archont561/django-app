@@ -1,71 +1,36 @@
-from django.shortcuts import render
-
-from rest_framework import viewsets, status
+from rest_framework import permissions, viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
-from .models import CustomUser, BankAccount, LogEntry, ActionType, ActionStatus
+from .models import CustomUser, BankAccount, LogEntry
 from .serializers import CustomUserSerializer, BankAccountSerializer, LogEntrySerializer
 
-
-# API dla użytkowników
+#API dla użytkowników (tylko administratorzy mogą zarządzać użytkownikami)
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    permission_classes = [permissions.IsAdminUser]  # Tylko administratorzy mają dostęp
 
-
-# API dla kont bankowych
+#API dla kont bankowych (zwykli użytkownicy widzą swoje konta, admini - wszystko)
 class BankAccountViewSet(viewsets.ModelViewSet):
     queryset = BankAccount.objects.all()
     serializer_class = BankAccountSerializer
 
-    @action(detail=True, methods=['post'])
-    def deposit(self, request, pk=None):
-        """ Obsługa wpłaty na konto """
-        account = self.get_object()
-        amount = request.data.get('amount')
-        if not amount or float(amount) <= 0:
-            return Response({'error': 'Invalid deposit amount'}, status=status.HTTP_400_BAD_REQUEST)
+    def get_permissions(self):
+        """ Administratorzy widzą wszystko, użytkownicy tylko swoje konta """
+        if self.action in ['list', 'retrieve']:  # Odczyt danych dostępny dla użytkowników
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]  # Tylko administrator może edytować i tworzyć konta
 
-        account.deposit(float(amount))
-        return Response({'message': 'Deposit successful', 'new_balance': account.balance})
+    def get_queryset(self):
+        """ Zwykli użytkownicy widzą tylko swoje konta, admini widzą wszystko """
+        user = self.request.user
+        if user.is_staff:  # Admini widzą wszystko
+            return BankAccount.objects.all()
+        return BankAccount.objects.filter(account_holder=user)  # Zwykli użytkownicy widzą tylko swoje konta
 
-    @action(detail=True, methods=['post'])
-    def withdraw(self, request, pk=None):
-        """ Obsługa wypłaty z konta """
-        account = self.get_object()
-        amount = request.data.get('amount')
-        if not amount or float(amount) <= 0:
-            return Response({'error': 'Invalid withdrawal amount'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            account.withdraw(float(amount))
-        except ValueError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({'message': 'Withdrawal successful', 'new_balance': account.balance})
-
-    @action(detail=True, methods=['post'])
-    def transfer(self, request, pk=None):
-        """ Obsługa przelewu między kontami """
-        account = self.get_object()
-        to_account_id = request.data.get('to_account')
-        amount = request.data.get('amount')
-
-        if not to_account_id or not amount or float(amount) <= 0:
-            return Response({'error': 'Invalid transfer request'}, status=status.HTTP_400_BAD_REQUEST)
-
-        to_account = get_object_or_404(BankAccount, id=to_account_id)
-
-        try:
-            account.transfer(to_account, float(amount))
-        except ValueError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({'message': 'Transfer successful', 'new_balance': account.balance})
-
-
-# API dla logów operacji bankowych
+#API dla logów (tylko administratorzy mogą przeglądać logi)
 class LogEntryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = LogEntry.objects.all()
     serializer_class = LogEntrySerializer
+    permission_classes = [permissions.IsAdminUser]  # Tylko administratorzy widzą logi
