@@ -1,34 +1,28 @@
 from enum import Enum
 
 
-class ActionType(Enum):
-    USER_CREATED = "User Created"
-    DEPOSIT = "Deposit Made"
-    WITHDRAWAL = "Withdrawal Made"
-    TRANSFER = "Transfer Made"
-    ACCOUNT_CREATED = "Bank Account Created"
-    ACCOUNT_UPDATED = "Bank Account Updated"
-    ACCOUNT_DELETED = "Bank Account Deleted"
-
+class Action(Enum):
     def __str__(self):
-        return self.value
+        return self.name.replace("_", "").capitalize()
 
 
-class ActionStatus(Enum):
+class ActionType(Action):
+    USER_CREATED = 1
+    DEPOSIT = 2
+    WITHDRAWAL = 3
+    TRANSFER = 4
+    ACCOUNT_CREATED = 5
+    ACCOUNT_UPDATED = 6
+    ACCOUNT_DELETED = 7
+
+class ActionStatus(Action):
     SUCCESS = 1
     FAILURE = 2
     PENDING = 3
 
-    def __str__(self):
-        return self.value
 
-
-class AccountType(Enum):
+class AccountType(Action):
     SAVINGS = 'SAV'
     CHECKING = 'CHK'
     BUSINESS = 'BUS'
     CREDIT_CARD = 'CC'
-
-    def __str__(self):
-        return self.name.replace("_", "").capitalize()
-

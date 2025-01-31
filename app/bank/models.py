@@ -8,8 +8,8 @@ from django.conf import settings
 from .enums import AccountType, ActionStatus, ActionType
 
 class LogEntry(models.Model):
-    action = models.CharField(max_length=50, choices=[(tag.name, tag.value) for tag in ActionType])
-    status = models.IntegerField(choices=[(tag.value, tag.name) for tag in ActionStatus])
+    action = models.IntegerField(choices=[(tag.value, str(tag)) for tag in ActionType])
+    status = models.IntegerField(choices=[(tag.value, str(tag)) for tag in ActionStatus])
     timestamp = models.DateTimeField(auto_now_add=True)
     details = models.TextField(blank=True, null=True)
 
