@@ -121,7 +121,7 @@ class BankAccount(models.Model):
         return f"{self.account_holder.username} - {self.account_number} ({self.account_type})"
 
     def deposit(self, amount: float):
-        log = f"{amount:%.2f} -> {self.account_number}"
+        log = f"{amount:.2f} -> {self.account_number}"
         if amount <= 0:
             error = "Deposit should be positive!"
             LogEntry.log(ActionType.DEPOSIT, ActionStatus.FAILURE, ' '.join((log, f"error: {error}")))
@@ -133,7 +133,7 @@ class BankAccount(models.Model):
         return self
 
     def withdraw(self, amount: float):
-        log = f"{self.account_number} -> {amount:%.2f}"
+        log = f"{self.account_number} -> {amount:.2f}"
         if amount <= 0:
             error = "Withdrawal amount should be positive!"
             LogEntry.log(ActionType.WITHDRAWAL, ActionStatus.FAILURE, ' '.join((log, f"error: {error}")))
@@ -149,7 +149,7 @@ class BankAccount(models.Model):
         return self
 
     def transfer(self, to_account, amount: float) -> None:
-        log = f"{self.account_number} -> {amount:%.2f} -> {to_account.account_number}"
+        log = f"{self.account_number} -> {amount:.2f} -> {to_account.account_number}"
         LogEntry.log(ActionType.TRANSFER, ActionStatus.PENDING, log)
         try: self.withdraw(amount)
         except ValueError as e:
