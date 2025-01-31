@@ -1,0 +1,8 @@
+{% extends "bank/base.html" %}
+
+{% block content %}
+<div class="container text-center">
+    <h1>Witaj w Banku Santiago!</h1>
+    <p><a href="{% url 'login' %}" class="btn btn-primary">Zaloguj się</a> lub <a href="{% url 'register' %}" class="btn btn-success">Zarejestruj</a></p>
+</div>
+{% endblock %}
