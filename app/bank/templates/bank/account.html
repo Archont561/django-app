@@ -1,0 +1,18 @@
+{% extends "bank/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Twoje Konta Bankowe</h2>
+    {% for account in accounts %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Numer konta: {{ account.account_number }}</h5>
+                <p><strong>Typ konta:</strong> {{ account.account_type }}</p>
+                <p><strong>Saldo:</strong> {{ account.balance }} PLN</p>
+            </div>
+        </div>
+    {% empty %}
+        <p>Nie masz jeszcze konta bankowego.</p>
+    {% endfor %}
+</div>
+{% endblock %}
