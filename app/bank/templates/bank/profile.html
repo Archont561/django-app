@@ -1,0 +1,11 @@
+{% extends "bank/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Twój Profil</h2>
+    <p><strong>Użytkownik:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Imię:</strong> {{ user.first_name }}</p>
+    <p><strong>Nazwisko:</strong> {{ user.last_name }}</p>
+</div>
+{% endblock %}
