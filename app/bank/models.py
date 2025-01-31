@@ -47,11 +47,11 @@ class LogEntry(models.Model):
     details = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.action} at {self.timestamp}"
+        return f"{self.action:<15} | {self.timestamp.strftime('%Y-%m-%d %H:%M:%S'):^20} | {self.details}"
 
     @classmethod
     def log(cls, action: ActionType, status: ActionStatus, details: str = "") -> None:
-        cls.objects.create(action=action, status=ActionStatus, details=details)
+        cls.objects.create(action=action, status=status.value, details=details)
 
 
 class CustomUserManager(BaseUserManager):
