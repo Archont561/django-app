@@ -29,6 +29,7 @@ class ActionStatus(Enum):
     def __str__(self):
         return self.value
 
+
 class AccountType(Enum):
     SAVINGS = 'SAV'
     CHECKING = 'CHK'
@@ -99,8 +100,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['username', 'email', 'first_name', 'last_name']
-
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
     def __str__(self):
         return self.username
 
@@ -158,3 +158,4 @@ class BankAccount(models.Model):
         else:
             to_account.deposit(amount)
             LogEntry.log(ActionType.TRANSFER, ActionStatus.SUCCESS, log)
+ 
