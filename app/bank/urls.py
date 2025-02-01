@@ -12,7 +12,6 @@ router.register(r'accounts', BankAccountViewSet)
 router.register(r'logs', LogEntryViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('', home, name='home'),
     path('register/', register, name='register'),
