@@ -67,8 +67,9 @@ def login_view(request):
         
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            return redirect('profile')
+            login(request, user) 
+            next_url = request.GET.get('next', 'profile')
+            return redirect(next_url)
         else:
             # invalid login
             return render(request, 'bank/login.html', {'error': 'Invalid credentials'})
@@ -84,3 +85,7 @@ def profile(request):
 def account(request):
     user_accounts = request.user.bank_accounts.all()
     return render(request, 'bank/account.html', {'accounts': user_accounts})
+
+def custom_logout(request):
+    logout(request)
+    return redirect('home')

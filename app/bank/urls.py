@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from bank.views import (
     CustomUserViewSet, BankAccountViewSet, LogEntryViewSet,
-    home, register, login_view, profile, account
+    home, register, login_view, profile, account, custom_logout
 )
 
 router = DefaultRouter()
@@ -18,4 +18,5 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('profile/', profile, name='profile'),
     path('account/', account, name='account'),
+    path('logout/', custom_logout, name='logout'),
 ]
