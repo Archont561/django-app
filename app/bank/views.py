@@ -1,6 +1,7 @@
-from rest_framework import permissions, viewsets, status
+from rest_framework import permissions, viewsets, status, au
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.forms import UserCreationForm  
 from django.contrib.auth.decorators import login_required
@@ -51,7 +52,7 @@ def register(request):
         form = CustomUserCreationForm(request.POST, request.FILES)  # Handle file uploads like profile pictures
         if form.is_valid():
             form.save()
-            return redirect('home')  # Redirect to home after successful registration
+            return redirect('profile')  # Redirect to home after successful registration
     else:
         form = CustomUserCreationForm()
 
@@ -67,7 +68,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('profile')
         else:
             # invalid login
             return render(request, 'bank/login.html', {'error': 'Invalid credentials'})
